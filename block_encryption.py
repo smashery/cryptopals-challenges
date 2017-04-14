@@ -265,3 +265,22 @@ def find_actual_char_value(block, previous_block, char_to_test, known_end_chars)
     # The number we used to do this was good_values[0]. So we can xor to find the actual value
     return chr(correct_value ^ number_to_coerce_to)
 
+
+def get_key_from_same_iv_as_key(encrypt_func, decrypt_func):
+    block_size = 16
+    ciphertext = encrypt_func('A'*3*block_size)
+    chunked = chunks(ciphertext, block_size)
+    chunk1 = chunked.next()
+    new_ciphertext = chunk1 + '\x00' * block_size + chunk1
+    try:
+        decrypt_func(new_ciphertext)
+    except InvalidMessageException, e:
+        matches = re.match('Unprintable characters: (.*)$', e.message)
+        plaintext = matches.groups()[0]
+        chunked = chunks(plaintext, block_size)
+        chunk1 = chunked.next()
+        chunked.next()
+        chunk3 = chunked.next()
+        key = xor_bytes(chunk1, chunk3)
+        return key
+    return None
