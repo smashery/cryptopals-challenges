@@ -1,4 +1,5 @@
 import itertools
+import re
 
 
 def pad_pkcs7(text, block_size):

@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# Taken from https://github.com/ajalt/python-sha1/blob/master/sha1.py
+# Under MIT license
+
 from __future__ import print_function
 import struct
 import io
@@ -142,15 +145,20 @@ class Sha1Hash(object):
         return _process_chunk(message[64:], *h)
 
 
-def sha1(data):
+def sha1(data, pretty_print=False):
     """SHA-1 Hashing Function
     A custom SHA-1 hashing function implemented entirely in Python.
     Arguments:
         data: A bytes or BytesIO object containing the input message to hash.
+        pretty_print: Whether to output as hex or as binary
     Returns:
         A hex SHA-1 digest of the input message.
     """
-    return Sha1Hash().update(data).hexdigest()
+    result = Sha1Hash().update(data)
+    if pretty_print:
+        return result.hexdigest()
+    else:
+        return result.digest()
 
 
 if __name__ == '__main__':
