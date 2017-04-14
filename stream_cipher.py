@@ -1,4 +1,5 @@
 import itertools
+
 from decode_xor import *
 
 def decrypt_and_print_all_ciphertexts_with_stream(ciphertexts, bitstream_guess):
@@ -58,3 +59,24 @@ def coerce_bitstream_guess_with(ciphertexts, text_index, char_index, desired_cha
     char = ciphertext[char_index]
     new_bitstream_guess = ord(char) ^ ord(desired_char)
     bitstream_guess[char_index] = new_bitstream_guess
+
+
+def get_stream_text_injection_location(func):
+    ciphertext1 = func('A')
+    ciphertext2 = func('B')
+    for i, (c1, c2) in enumerate(zip(ciphertext1, ciphertext2)):
+        if c1 != c2:
+            return i
+    return None
+
+
+def insert_text_into_ctr(func, desired_text):
+    location = get_stream_text_injection_location(func)
+    benign_text = 'A'*len(desired_text)
+    ciphertext = func(benign_text)
+    bits_to_overwrite = ciphertext[location:location+len(desired_text)]
+    assert len(benign_text) == len(bits_to_overwrite) == len(desired_text)
+    modified_ciphertext = ciphertext[:location] + \
+                          xor_bytes(benign_text, xor_bytes(bits_to_overwrite, desired_text)) + \
+                          ciphertext[location+len(desired_text):]
+    return modified_ciphertext

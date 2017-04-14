@@ -264,3 +264,4 @@ def find_actual_char_value(block, previous_block, char_to_test, known_end_chars)
     # The number we must have succeeded in coercing it to was number_to_coerce_to
     # The number we used to do this was good_values[0]. So we can xor to find the actual value
     return chr(correct_value ^ number_to_coerce_to)
+
