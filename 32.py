@@ -5,7 +5,7 @@ import time
 import numpy
 import collections
 
-server = 'localhost'
+server = '127.0.0.1'
 port = 8000
 request_framework = 'http://%s:%d' % (server, port) + '/test?file=%s&signature=%s'
 
@@ -94,7 +94,7 @@ def determine_valid_mac_using_timing_attack(request_func, message):
         print 'Finding byte %d...' % x
         # For each byte
         unknown_chars = unknown_chars[2:]
-        char_num = guess_char_with_timing(lambda x: request_func(message, known_chars + binascii.hexlify(chr(x)) + unknown_chars), requests.get, 1.3, 1, 1)
+        char_num = guess_char_with_timing(lambda x: request_func(message, known_chars + binascii.hexlify(chr(x)) + unknown_chars), requests.get, 0.9, 1, 0.7)
         known_chars += binascii.hexlify(chr(char_num))
     assert len(known_chars) == signature_length_hex_chars
     return known_chars
