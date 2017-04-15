@@ -1,9 +1,19 @@
 from sha1 import *
+from decode_xor import *
 
 
-def create_sha1_mac(message, key):
-    return sha1(key+message, pretty_print=False)
+def hmac_sha1(key, message):
+    blocksize = 64
+    if len(key) > blocksize:
+        key = sha1(key) # keys longer than blocksize are shortened
+    if len(key) < blocksize:
+        # keys shorter than blocksize are zero-padded
+        key = key + '\x00' * (blocksize - len(key))
 
+    o_key_pad = xor_bytes('\x5c' * blocksize, key)
+    i_key_pad = xor_bytes('\x36' * blocksize, key)
+
+    return sha1(o_key_pad + sha1(i_key_pad + message))
 
 def add_sha1_padding(text):
     # append 0 <= k < 512 bits '0', so that the resulting message length (in bytes)
