@@ -41,7 +41,7 @@ class Hackable(SimpleHTTPServer.SimpleHTTPRequestHandler):
         for user_sig_byte, server_sig_byte in zip(bin_sig, hmac_calc):
             if user_sig_byte != server_sig_byte:
                 return False
-            time.sleep(0.002)
+            time.sleep(0.0005)
         return True
 
 def run_while_true(server_class=BaseHTTPServer.HTTPServer,
