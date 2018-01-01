@@ -15,7 +15,7 @@ class MT19937(object):
 
     def __init__(self, seed):
         self.index = self.n
-        self.MT = [seed]
+        self.MT = [_int32(seed)]
         for i in range(1, self.n):
             self.MT.append(_int32((self.f * (self.MT[i - 1] ^ (self.MT[i - 1] >> (self.w - 2)))) + i))
 
